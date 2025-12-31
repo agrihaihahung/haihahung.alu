@@ -181,3 +181,33 @@ function filterStock() {
 function downloadStock() {
   window.open(`${API}/download/stock`, "_blank");
 }
+// ================= CLEAR DATA =================
+async function clearData() {
+  const key = document.getElementById("clearKey").value.trim();
+  if (!key) {
+    alert("Vui lòng nhập KEY");
+    return;
+  }
+
+  if (!confirm("⚠️ Thao tác này sẽ XOÁ TOÀN BỘ dữ liệu nhập/xuất. Bạn chắc chắn?")) {
+    return;
+  }
+
+  const res = await fetch(`${API}/admin/clear-data`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ key })
+  });
+
+  const data = await res.json();
+
+  if (data.status === "ok") {
+    alert("✅ " + data.message);
+    loadStock();
+    loadHistory();
+  } else {
+    alert("❌ " + data.message);
+  }
+
+  document.getElementById("clearKey").value = "";
+}

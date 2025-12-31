@@ -185,3 +185,66 @@ def download_materials():
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": "attachment; filename=DanhMuc_MaNhom.xlsx"}
     )
+# ================= FULL REPORT =================
+@app.get("/report/full")
+def report_full(from_date: str, to_date: str):
+    with engine.connect() as conn:
+        return conn.execute(text("""
+            WITH opening AS (
+                SELECT
+                    material_id,
+                    SUM(
+                        CASE
+                            WHEN type='IN' THEN quantity
+                            WHEN type='OUT' THEN -quantity
+                        END
+                    ) AS opening_stock
+                FROM transactions
+                WHERE DATE(created_at) < :from_date
+                GROUP BY material_id
+            ),
+            period AS (
+                SELECT
+                    material_id,
+                    SUM(CASE WHEN type='IN' THEN quantity ELSE 0 END) AS period_in,
+                    SUM(CASE WHEN type='OUT' THEN quantity ELSE 0 END) AS period_out
+                FROM transactions
+                WHERE DATE(created_at) BETWEEN :from_date AND :to_date
+                GROUP BY material_id
+            )
+            SELECT
+                m.he_nhom,
+                m.ma_hang,
+                COALESCE(o.opening_stock,0) AS ton_dau,
+                COALESCE(p.period_in,0) AS nhap,
+                COALESCE(p.period_out,0) AS xuat,
+                COALESCE(o.opening_stock,0)
+                  + COALESCE(p.period_in,0)
+                  - COALESCE(p.period_out,0) AS ton_cuoi
+            FROM materials m
+            LEFT JOIN opening o ON o.material_id = m.id
+            LEFT JOIN period p ON p.material_id = m.id
+            WHERE
+                COALESCE(o.opening_stock,0)
+              + COALESCE(p.period_in,0)
+              - COALESCE(p.period_out,0) != 0
+            ORDER BY m.he_nhom, m.ma_hang
+        """), {
+            "from_date": from_date,
+            "to_date": to_date
+        }).mappings().all()
+# ================= CLEAR DATA (ADMIN) =================
+class ClearPayload(BaseModel):
+    key: str
+
+ADMIN_KEY = "9uJshfQjZA"   # 🔑 đổi key này theo ý bạn
+
+@app.post("/admin/clear-data")
+def clear_data(p: ClearPayload):
+    if p.key != ADMIN_KEY:
+        return {"status": "error", "message": "KEY không hợp lệ"}
+
+    with engine.begin() as conn:
+        conn.execute(text("DELETE FROM transactions"))
+
+    return {"status": "ok", "message": "Đã xoá toàn bộ dữ liệu nhập / xuất"}

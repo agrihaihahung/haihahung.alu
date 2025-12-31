@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý tồn kho</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="box">
+
+  <!-- MENU -->
+  <nav style="margin-bottom:15px">
+    <a href="index.html">🏠 Nhập / Xuất</a> |
+    <a href="kho.html"><b>📦 Quản lý tồn kho</b></a>
+  </nav>
+
+  <h2>📦 Quản lý tồn kho</h2>
+
+  <!-- FILTER -->
+  <label>Hệ nhôm</label>
+  <select id="heNhom"></select>
+
+  <input
+    type="text"
+    id="search"
+    placeholder="🔍 Tìm mã nhôm..."
+    oninput="filterStock()"
+  >
+
+  <button onclick="downloadStock()">📤 Xuất Excel tồn kho</button>
+
+  <!-- TABLE -->
+  <table>
+    <thead>
+      <tr>
+        <th>Mã nhôm</th>
+        <th>Tồn</th>
+      </tr>
+    </thead>
+    <tbody id="stock"></tbody>
+  </table>
+
+</div>
+
+<script src="app.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    loadHeNhom();
+    loadStock();
+  });
+</script>
+
+</body>
+</html>

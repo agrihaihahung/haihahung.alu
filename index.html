@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý tồn kho nhôm</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav style="margin-bottom:15px">
+    <a href="index.html">🏠 Nhập / Xuất</a> |
+    <a href="kho.html">📦 Quản lý tồn kho</a>
+  </nav>
+
+<div class="box">
+  <h2>📦 Quản lý tồn kho nhôm</h2>
+
+  <!-- ===== NHẬP TAY ===== -->
+  <label>Hệ nhôm</label>
+  <select id="heNhom"></select>
+
+  <label>Mã nhôm</label>
+  <select id="material"></select>
+
+  <input id="qty" type="number" placeholder="Số lượng">
+
+  <button onclick="stockIn()">➕ Nhập kho</button>
+  <button class="out" onclick="stockOut()">➖ Xuất kho</button>
+
+  <hr>
+
+  <!-- ===== IMPORT EXCEL ===== -->
+  <h3>📥 Nhập kho từ Excel</h3>
+  <input type="file" id="excelFile" accept=".xlsx">
+  <button onclick="importExcel()">📤 Import Excel</button>
+
+  <!-- ===== DOWNLOAD FILE ===== -->
+  <h3>📊 File Excel hỗ trợ</h3>
+  <button onclick="downloadTemplate()">📥 Tải file Excel mẫu</button>
+  <button onclick="downloadMaterials()">📤 Tải danh sách mã nhôm</button>
+
+  <!-- ===== TỒN KHO ===== -->
+  <h3>📊 Tồn kho hiện tại</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Mã nhôm</th>
+        <th>Tồn</th>
+      </tr>
+    </thead>
+    <tbody id="stock"></tbody>
+  </table>
+
+  <!-- ===== LỊCH SỬ ===== -->
+  <h3 style="display:flex;align-items:center;gap:12px">
+    🕒 Lịch sử nhập – xuất
+    <button id="toggleHistoryBtn" onclick="toggleHistory()">Ẩn lịch sử</button>
+  </h3>
+
+  <table id="historyTable">
+    <thead>
+      <tr>
+        <th>Thời gian</th>
+        <th>Mã nhôm</th>
+        <th>Loại</th>
+        <th>Số lượng</th>
+      </tr>
+    </thead>
+    <tbody id="history"></tbody>
+  </table>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

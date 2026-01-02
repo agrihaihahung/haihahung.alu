@@ -1,4 +1,4 @@
-const API = "http://127.0.0.1:8000";
+const API = "";
 let allMaterials = [];
 let historyVisible = true;
 
@@ -211,3 +211,4 @@ async function clearData() {
 
   document.getElementById("clearKey").value = "";
 }
+

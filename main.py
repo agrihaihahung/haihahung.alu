@@ -3,10 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from sqlalchemy import create_engine, text
 from pydantic import BaseModel
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import pandas as pd
 import io
 
 app = FastAPI(title="Quản lý tồn kho nhôm")
+# ================= STATIC FILES =================
+app.mount("/static", StaticFiles(directory="."), name="static")
 
 # ================= CORS =================
 app.add_middleware(
@@ -248,3 +252,4 @@ def clear_data(p: ClearPayload):
         conn.execute(text("DELETE FROM transactions"))
 
     return {"status": "ok", "message": "Đã xoá toàn bộ dữ liệu nhập / xuất"}
+

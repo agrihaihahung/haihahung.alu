@@ -253,3 +253,13 @@ def clear_data(p: ClearPayload):
 
     return {"status": "ok", "message": "Đã xoá toàn bộ dữ liệu nhập / xuất"}
 
+@app.get("/")
+def home():
+    return FileResponse("index.html")
+
+@app.get("/kho")
+def kho_page():
+    return FileResponse("kho.html")
+
+
+
